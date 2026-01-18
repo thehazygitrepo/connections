@@ -452,7 +452,7 @@
 
       function renderMistakes() {
         mistakeDotsEl.innerHTML = "";
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 6; i++) {
           const d = document.createElement("div");
           d.className = "dot" + (i < mistakesLeft ? "" : " off");
           mistakeDotsEl.appendChild(d);
@@ -580,7 +580,7 @@ ${guessRows.join("\n")}`;
         solvedGroups.clear();
         solvedOrder = [];
         guessRows = [];
-        mistakesLeft = 7;
+        mistakesLeft = 6;
         gameOver = false;
         renderMistakes();
         renderSolved();
