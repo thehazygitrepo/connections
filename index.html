@@ -1,464 +1,595 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Armani connections</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Armani connections</title>
 
-  <meta property="og:title" content="Armani connections" />
-  <meta name="twitter:title" content="Armani connections" />
-  <meta name="apple-mobile-web-app-title" content="Armani connections" />
+    <meta property="og:title" content="Armani connections" />
+    <meta name="twitter:title" content="Armani connections" />
+    <meta name="apple-mobile-web-app-title" content="Armani connections" />
 
-  <style>
-    :root{
-      --bg:#ffffff;
-      --text:#111111;
-      --muted:#6b7280;
-
-      --yellow:#f3d35b;
-      --green:#a8d08d;
-      --blue:#9bb7e0;
-      --purple:#b6a1d8;
-
-      --tile:#f5f5f5;
-      --tileBorder:#e5e7eb;
-
-      --shadow: 0 8px 24px rgba(0,0,0,.08);
-      --radius: 16px;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:var(--bg);
-      color:var(--text);
-    }
-
-    .wrap{
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 18px 14px 28px;
-    }
-
-    header{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 14px;
-    }
-
-    h1{
-      font-size: 22px;
-      margin: 0;
-      letter-spacing: .2px;
-      line-height:1.2;
-    }
-    .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size: 13px;
-      line-height:1.35;
-    }
-
-    .pillbar{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      align-items:center;
-    }
-
-    button{
-      appearance:none;
-      border:1px solid var(--tileBorder);
-      background:#fff;
-      color:#111;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 14px;
-      line-height:1;
-      box-shadow: 0 1px 0 rgba(0,0,0,.03);
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button:active{ transform: translateY(1px); }
-    button:disabled{ opacity:.45; cursor:not-allowed; }
-
-    .board{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .tile{
-      border: 1px solid var(--tileBorder);
-      background: var(--tile);
-      border-radius: 14px;
-      padding: 14px 10px;
-      min-height: 56px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      font-weight: 800;
-      letter-spacing: .3px;
-      user-select:none;
-      cursor:pointer;
-      box-shadow: 0 1px 0 rgba(0,0,0,.04);
-      transition: transform .05s ease, background .15s ease, border-color .15s ease, color .15s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tile:active{ transform: scale(.99); }
-
-    .tile.selected{
-      background: #111;
-      color:#fff;
-      border-color:#111;
-    }
-
-    .solvedRow{
-      margin-top: 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .groupCard{
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(0,0,0,.06);
-    }
-    .groupTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .groupName{
-      font-weight: 900;
-      letter-spacing:.2px;
-    }
-    .groupHint{
-      margin-top: 8px;
-      color:#111;
-      font-weight: 650;
-      font-size: 14px;
-    }
-    .groupWords{
-      margin-top: 10px;
-      color: rgba(0,0,0,.7);
-      font-size: 13px;
-      line-height:1.35;
-    }
-    .badge{
-      font-size:12px;
-      font-weight:800;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.55);
-      border: 1px solid rgba(0,0,0,.08);
-    }
-
-    .status{
-      margin-top: 12px;
-      min-height: 22px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    .status strong{ color:#111; }
-
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(17,17,17,.92);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: .2px;
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-    }
-    .toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-2px);
-    }
-
-    @media (max-width: 360px){
-      .tile{ padding: 12px 8px; min-height: 52px; font-size: 14px; }
-      button{ font-size: 13px; padding: 9px 11px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Armani connections</h1>
-        <div class="sub">Find four groups of four. Tap tiles to select, then hit Submit.</div>
-      </div>
-      <div class="pillbar">
-        <button id="shuffleBtn" title="Shuffle tiles">Shuffle</button>
-        <button id="deselectBtn" title="Clear selection">Deselect</button>
-        <button id="submitBtn" disabled title="Submit selection">Submit</button>
-        <button id="shareBtn" title="Share results">Share</button>
-      </div>
-    </header>
-
-    <div id="solved" class="solvedRow"></div>
-    <div id="board" class="board" aria-label="Connections grid"></div>
-    <div id="status" class="status"></div>
-  </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <script>
-    const GROUPS = [
-      { difficulty: "Easy",       colorVar: "--yellow", hint: "Card Games", words: ["Blackjack", "Bridge", "War", "Hearts"] },
-      { difficulty: "Medium",     colorVar: "--green",  hint: "Shorthand for Call Of Duty game modes", words: ["TDM", "FFA", "Dom", "Search"] },
-      { difficulty: "Hard",       colorVar: "--blue",   hint: "Surnames of famous designers", words: ["Armani", "Boss", "Ford", "Lauren"] },
-      { difficulty: "Extra Hard", colorVar: "--purple", hint: "Soy -", words: ["Zach", "Boy", "Bean", "Milk"] }
-    ];
-
-    const GROUP_EMOJI = ["🟨","🟩","🟦","🟪"];
-
-    const wordToGroup = new Map();
-    GROUPS.forEach((g, gi) => g.words.forEach(w => wordToGroup.set(w, gi)));
-
-    let tiles = [];
-    let selected = new Set();
-    let solvedGroups = new Set();
-    let solvedOrder = [];     // NEW: order solved
-    let guessRows = [];       // NEW: emoji rows per submit
-
-    const boardEl = document.getElementById("board");
-    const solvedEl = document.getElementById("solved");
-    const statusEl = document.getElementById("status");
-    const shuffleBtn = document.getElementById("shuffleBtn");
-    const deselectBtn = document.getElementById("deselectBtn");
-    const submitBtn = document.getElementById("submitBtn");
-    const shareBtn = document.getElementById("shareBtn");
-    const toastEl = document.getElementById("toast");
-
-    function cssVar(name){
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function shuffle(arr){
-      for(let i = arr.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+    <style>
+      .mistakesWrap {
+        margin-top: 14px;
+        text-align: center;
       }
-      return arr;
-    }
+      .mistakesLabel {
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--muted);
+        letter-spacing: 0.2px;
+      }
+      .dots {
+        margin-top: 8px;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #111;
+        opacity: 1;
+      }
+      .dot.off {
+        opacity: 0.18;
+      }
+      :root {
+        --bg: #ffffff;
+        --text: #111111;
+        --muted: #6b7280;
 
-    function toast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      setTimeout(() => toastEl.classList.remove("show"), 1200);
-    }
+        --yellow: #f3d35b;
+        --green: #a8d08d;
+        --blue: #9bb7e0;
+        --purple: #b6a1d8;
 
-    function updateButtons(){
-      submitBtn.disabled = selected.size !== 4;
-      deselectBtn.disabled = selected.size === 0;
-      shareBtn.disabled = solvedGroups.size !== 4;
-    }
+        --tile: #f5f5f5;
+        --tileBorder: #e5e7eb;
 
-    function setStatus(html){
-      statusEl.innerHTML = html || "";
-    }
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        --radius: 16px;
+      }
 
-    function resetSelection(){
-      selected.clear();
-      renderBoard();
-      updateButtons();
-    }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+      }
 
-    function renderSolved(){
-      solvedEl.innerHTML = "";
-      solvedOrder.forEach(gi => {
-        const g = GROUPS[gi];
+      .wrap {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 18px 14px 28px;
+      }
 
-        const card = document.createElement("div");
-        card.className = "groupCard";
-        card.style.background = cssVar(g.colorVar);
+      header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
 
-        const top = document.createElement("div");
-        top.className = "groupTop";
+      h1 {
+        font-size: 22px;
+        margin: 0;
+        letter-spacing: 0.2px;
+        line-height: 1.2;
+      }
+      .sub {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+      }
 
-        const name = document.createElement("div");
-        name.className = "groupName";
-        name.textContent = g.difficulty;
+      .pillbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+      }
 
-        const badge = document.createElement("div");
-        badge.className = "badge";
-        badge.textContent = "Solved";
+      button {
+        appearance: none;
+        border: 1px solid var(--tileBorder);
+        background: #fff;
+        color: #111;
+        padding: 10px 12px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 1;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:active {
+        transform: translateY(1px);
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
 
-        top.appendChild(name);
-        top.appendChild(badge);
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-        const hint = document.createElement("div");
-        hint.className = "groupHint";
-        hint.textContent = g.hint;
+      .tile {
+        border: 1px solid var(--tileBorder);
+        background: var(--tile);
+        border-radius: 14px;
+        padding: 14px 10px;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        user-select: none;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+        transition: transform 0.05s ease, background 0.15s ease,
+          border-color 0.15s ease, color 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .tile:active {
+        transform: scale(0.99);
+      }
 
-        const words = document.createElement("div");
-        words.className = "groupWords";
-        words.textContent = g.words.join(" • ");
+      .tile.selected {
+        background: #111;
+        color: #fff;
+        border-color: #111;
+      }
 
-        card.appendChild(top);
-        card.appendChild(hint);
-        card.appendChild(words);
+      .solvedRow {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .groupCard {
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .groupTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .groupName {
+        font-weight: 900;
+        letter-spacing: 0.2px;
+      }
+      .groupHint {
+        margin-top: 8px;
+        color: #111;
+        font-weight: 650;
+        font-size: 14px;
+      }
+      .groupWords {
+        margin-top: 10px;
+        color: rgba(0, 0, 0, 0.7);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .badge {
+        font-size: 12px;
+        font-weight: 800;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
 
-        solvedEl.appendChild(card);
-      });
-    }
+      .status {
+        margin-top: 12px;
+        min-height: 22px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .status strong {
+        color: #111;
+      }
 
-    function renderBoard(){
-      boardEl.innerHTML = "";
-      tiles.forEach(word => {
-        const btn = document.createElement("div");
-        btn.className = "tile";
-        btn.textContent = word;
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        background: rgba(17, 17, 17, 0.92);
+        color: #fff;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-2px);
+      }
 
-        if(selected.has(word)) btn.classList.add("selected");
+      @media (max-width: 360px) {
+        .tile {
+          padding: 12px 8px;
+          min-height: 52px;
+          font-size: 14px;
+        }
+        button {
+          font-size: 13px;
+          padding: 9px 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Armani connections</h1>
+          <div class="sub">
+            Find four groups of four. Tap tiles to select, then hit Submit.
+          </div>
+        </div>
+        <div class="pillbar">
+          <button id="shuffleBtn" title="Shuffle tiles">Shuffle</button>
+          <button id="deselectBtn" title="Clear selection">Deselect</button>
+          <button id="submitBtn" disabled title="Submit selection">
+            Submit
+          </button>
+          <button id="shareBtn" title="Share results">Share</button>
+        </div>
+      </header>
 
-        btn.addEventListener("click", () => {
-          if(selected.has(word)){
-            selected.delete(word);
-          } else {
-            if(selected.size >= 4){
-              toast("Only 4 tiles!");
-              return;
-            }
-            selected.add(word);
-          }
-          renderBoard();
-          updateButtons();
-          setStatus(selected.size ? `<strong>${selected.size}</strong> selected` : "");
+      <div id="solved" class="solvedRow"></div>
+      <div id="board" class="board" aria-label="Connections grid"></div>
+      <div id="status" class="status"></div>
+      <div id="mistakesWrap" class="mistakesWrap">
+        <div class="mistakesLabel">Mistakes</div>
+        <div
+          id="mistakeDots"
+          class="dots"
+          aria-label="Mistakes remaining"
+        ></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const GROUPS = [
+        {
+          difficulty: "Easy",
+          colorVar: "--yellow",
+          hint: "Card Games",
+          words: ["Blackjack", "Bridge", "War", "Hearts"],
+        },
+        {
+          difficulty: "Medium",
+          colorVar: "--green",
+          hint: "Shorthand for Call Of Duty game modes",
+          words: ["TDM", "FFA", "Dom", "Search"],
+        },
+        {
+          difficulty: "Hard",
+          colorVar: "--blue",
+          hint: "Surnames of famous designers",
+          words: ["Armani", "Boss", "Ford", "Lauren"],
+        },
+        {
+          difficulty: "Extra Hard",
+          colorVar: "--purple",
+          hint: "Soy -",
+          words: ["Zach", "Boy", "Bean", "Milk"],
+        },
+      ];
+
+      const GROUP_EMOJI = ["🟨", "🟩", "🟦", "🟪"];
+
+      const wordToGroup = new Map();
+      GROUPS.forEach((g, gi) => g.words.forEach((w) => wordToGroup.set(w, gi)));
+
+      let tiles = [];
+      let selected = new Set();
+      let solvedGroups = new Set();
+      let solvedOrder = []; // NEW: order solved
+      let guessRows = []; // NEW: emoji rows per submit
+      let mistakesLeft = 5;
+      let gameOver = false;
+
+      const boardEl = document.getElementById("board");
+      const solvedEl = document.getElementById("solved");
+      const statusEl = document.getElementById("status");
+      const shuffleBtn = document.getElementById("shuffleBtn");
+      const deselectBtn = document.getElementById("deselectBtn");
+      const submitBtn = document.getElementById("submitBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const toastEl = document.getElementById("toast");
+      const mistakeDotsEl = document.getElementById("mistakeDots");
+
+      function cssVar(name) {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(name)
+          .trim();
+      }
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        setTimeout(() => toastEl.classList.remove("show"), 1200);
+      }
+
+      function updateButtons() {
+        submitBtn.disabled = gameOver || selected.size !== 4;
+        deselectBtn.disabled = gameOver || selected.size === 0;
+        shareBtn.disabled = !(gameOver || solvedGroups.size === 4);
+        shuffleBtn.disabled = gameOver;
+      }
+
+      function setStatus(html) {
+        statusEl.innerHTML = html || "";
+      }
+
+      function resetSelection() {
+        selected.clear();
+        renderBoard();
+        updateButtons();
+      }
+
+      function renderSolved() {
+        solvedEl.innerHTML = "";
+        solvedOrder.forEach((gi) => {
+          const g = GROUPS[gi];
+
+          const card = document.createElement("div");
+          card.className = "groupCard";
+          card.style.background = cssVar(g.colorVar);
+
+          const top = document.createElement("div");
+          top.className = "groupTop";
+
+          const name = document.createElement("div");
+          name.className = "groupName";
+          name.textContent = g.difficulty;
+
+          const badge = document.createElement("div");
+          badge.className = "badge";
+          badge.textContent = "Solved";
+
+          top.appendChild(name);
+          top.appendChild(badge);
+
+          const hint = document.createElement("div");
+          hint.className = "groupHint";
+          hint.textContent = g.hint;
+
+          const words = document.createElement("div");
+          words.className = "groupWords";
+          words.textContent = g.words.join(" • ");
+
+          card.appendChild(top);
+          card.appendChild(hint);
+          card.appendChild(words);
+
+          solvedEl.appendChild(card);
         });
-
-        boardEl.appendChild(btn);
-      });
-    }
-
-    function recordGuessEmoji(){
-      const counts = [0,0,0,0];
-      selected.forEach(w => {
-        const gi = wordToGroup.get(w);
-        counts[gi] += 1;
-      });
-      let row = "";
-      for(let gi = 0; gi < counts.length; gi++){
-        row += GROUP_EMOJI[gi].repeat(counts[gi]);
-      }
-      guessRows.push(row);
-    }
-
-    function submit(){
-      if(selected.size !== 4) return;
-
-      recordGuessEmoji(); // NEW: always record the row, even if wrong
-
-      const inds = new Set();
-      for(const w of selected){
-        inds.add(wordToGroup.get(w));
       }
 
-      if(inds.size === 1){
-        const gi = [...inds][0];
-        if(solvedGroups.has(gi)){
-          toast("Already solved!");
-          resetSelection();
-          return;
+      function renderBoard() {
+        boardEl.innerHTML = "";
+        tiles.forEach((word) => {
+          const btn = document.createElement("div");
+          btn.className = "tile";
+          btn.textContent = word;
+
+          if (selected.has(word)) btn.classList.add("selected");
+
+          btn.addEventListener("click", () => {
+            if (selected.has(word)) {
+              selected.delete(word);
+            } else {
+              if (selected.size >= 4) {
+                toast("Only 4 tiles!");
+                return;
+              }
+              selected.add(word);
+            }
+            renderBoard();
+            updateButtons();
+            setStatus(
+              selected.size ? `<strong>${selected.size}</strong> selected` : ""
+            );
+          });
+
+          boardEl.appendChild(btn);
+        });
+      }
+
+      function recordGuessEmoji() {
+        const counts = [0, 0, 0, 0];
+        selected.forEach((w) => {
+          const gi = wordToGroup.get(w);
+          counts[gi] += 1;
+        });
+        let row = "";
+        for (let gi = 0; gi < counts.length; gi++) {
+          row += GROUP_EMOJI[gi].repeat(counts[gi]);
         }
+        guessRows.push(row);
+      }
 
-        solvedGroups.add(gi);
-        solvedOrder.push(gi);
+      function renderMistakes() {
+        mistakeDotsEl.innerHTML = "";
+        for (let i = 0; i < 5; i++) {
+          const d = document.createElement("div");
+          d.className = "dot" + (i < mistakesLeft ? "" : " off");
+          mistakeDotsEl.appendChild(d);
+        }
+      }
 
-        const solvedWords = new Set(GROUPS[gi].words);
-        tiles = tiles.filter(w => !solvedWords.has(w));
-
+      function revealAllAnswers() {
+        // mark any unsolved groups as "shown" in solvedOrder, in difficulty order
+        for (let gi = 0; gi < GROUPS.length; gi++) {
+          if (!solvedGroups.has(gi)) {
+            solvedGroups.add(gi);
+            solvedOrder.push(gi);
+          }
+        }
+        tiles = [];
         renderSolved();
-        resetSelection();
-
-        toast("Correct!");
-        setStatus(`<strong>${GROUPS[gi].difficulty}</strong>: ${GROUPS[gi].hint}`);
-
-        if(solvedGroups.size === 4){
-          toast("You win!");
-          setStatus("All groups solved 🎉");
-          updateButtons(); 
-        }
-      } else {
-        toast("Not a group");
-        setStatus("Try again.");
+        renderBoard();
       }
-    }
 
-    function shareResults(){
-      const text =
-`Armani connections
+      function endGameLose() {
+        gameOver = true;
+        toast("Game over");
+        setStatus("Out of mistakes — answers revealed.");
+        revealAllAnswers();
+        updateButtons();
+      }
+
+      function submit() {
+        if (gameOver) return;
+        if (selected.size !== 4) return;
+
+        recordGuessEmoji(); // NEW: always record the row, even if wrong
+
+        const inds = new Set();
+        for (const w of selected) {
+          inds.add(wordToGroup.get(w));
+        }
+
+        if (inds.size === 1) {
+          const gi = [...inds][0];
+          if (solvedGroups.has(gi)) {
+            toast("Already solved!");
+            resetSelection();
+            return;
+          }
+
+          solvedGroups.add(gi);
+          solvedOrder.push(gi);
+
+          const solvedWords = new Set(GROUPS[gi].words);
+          tiles = tiles.filter((w) => !solvedWords.has(w));
+
+          renderSolved();
+          resetSelection();
+
+          toast("Correct!");
+          setStatus(
+            `<strong>${GROUPS[gi].difficulty}</strong>: ${GROUPS[gi].hint}`
+          );
+
+          if (solvedGroups.size === 4) {
+            gameOver = true;
+            toast("You win!");
+            setStatus("All groups solved 🎉");
+            updateButtons();
+          }
+        } else {
+          mistakesLeft--;
+          renderMistakes();
+          toast("Not a group");
+          setStatus("Try again.");
+
+          if (mistakesLeft <= 0) {
+            endGameLose();
+          }
+        }
+      }
+
+      function shareResults() {
+        const text = `Armani connections
 ${guessRows.join("\n")}`;
 
-      if(navigator.share){
-        navigator.share({ title: "Armani connections", text });
-      } else if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(() => toast("Copied!"));
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        toast("Copied!");
+        if (navigator.share) {
+          navigator.share({ title: "Armani connections", text });
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => toast("Copied!"));
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          toast("Copied!");
+        }
       }
-    }
 
-    shuffleBtn.addEventListener("click", () => {
-      shuffle(tiles);
-      renderBoard();
-      toast("Shuffled");
-    });
+      shuffleBtn.addEventListener("click", () => {
+        shuffle(tiles);
+        renderBoard();
+        toast("Shuffled");
+      });
 
-    deselectBtn.addEventListener("click", () => {
-      resetSelection();
-      setStatus("");
-    });
+      deselectBtn.addEventListener("click", () => {
+        resetSelection();
+        setStatus("");
+      });
 
-    submitBtn.addEventListener("click", submit);
-    shareBtn.addEventListener("click", shareResults);
+      submitBtn.addEventListener("click", submit);
+      shareBtn.addEventListener("click", shareResults);
 
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "Enter") submit();
-      if(e.key === "Escape") { resetSelection(); setStatus(""); }
-    });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submit();
+        if (e.key === "Escape") {
+          resetSelection();
+          setStatus("");
+        }
+      });
 
-    function init(){
-      tiles = GROUPS.flatMap(g => g.words.slice());
-      shuffle(tiles);
+      function init() {
+        tiles = GROUPS.flatMap((g) => g.words.slice());
+        shuffle(tiles);
 
-      selected.clear();
-      solvedGroups.clear();
-      solvedOrder = [];
-      guessRows = [];
+        selected.clear();
+        solvedGroups.clear();
+        solvedOrder = [];
+        guessRows = [];
+        mistakesLeft = 5;
+        gameOver = false;
+        renderMistakes();
+        renderSolved();
+        renderBoard();
+        updateButtons();
+        setStatus("");
+      }
 
-      renderSolved();
-      renderBoard();
-      updateButtons();
-      setStatus("");
-    }
-
-    init();
-  </script>
-</body>
+      init();
+    </script>
+  </body>
 </html>
